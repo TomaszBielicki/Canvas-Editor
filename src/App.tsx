@@ -12,6 +12,9 @@ function App() {
   const [isReset, setIsReset] = useState(false);
   const [activeElementId, setActiveElementId] = useState<string | null>(null);
 
+  const [isFirstClick, setIsFirstClick] = useState(false);
+  const [isBackgroundGray, setIsBackgroundGray] = useState(false);
+
   const downloadRef = useRef<HTMLDivElement>(null);
 
   const changeBgInputRef = useRef<HTMLInputElement | null>(null);
@@ -19,7 +22,7 @@ function App() {
 
   return (
     <div
-      className="flex justify-between md:flex-row  w-full gap-4  px-[193px] py-[50px] font-poppins"
+      className="flex flex-col justify-between xl:flex-row  w-full gap-4  xl:px-[193px] px-[50px] py-[50px] font-poppins"
       onMouseDown={() => setActiveElementId(null)}
     >
       <Editor
@@ -36,6 +39,10 @@ function App() {
         setEditorText={setEditorText}
         setEditorBackgroundSrc={setEditorBackgroundSrc}
         setTextColor={setTextColor}
+        isFirstClick={isFirstClick}
+        setIsFirstClick={setIsFirstClick}
+        isBackgroundGray={isBackgroundGray}
+        setIsBackgroundGray={setIsBackgroundGray}
       />
 
       <Toolbar
@@ -48,6 +55,8 @@ function App() {
         downloadRef={downloadRef}
         isReset={isReset}
         setIsReset={setIsReset}
+        setIsBackgroundGray={setIsBackgroundGray}
+        setActiveElementId={setActiveElementId}
       />
     </div>
   );
