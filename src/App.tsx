@@ -8,11 +8,8 @@ function App() {
   const [editorBackgroundSrc, setEditorBackgroundSrc] = useState(createposter);
   const [editorImages, setEditorImages] = useState<EditorImage[]>([]);
   const [editorText, setEditorText] = useState<EditorText[]>([]);
-  const [textColor, setTextColor] = useState("black");
   const [isReset, setIsReset] = useState(false);
   const [activeElementId, setActiveElementId] = useState<string | null>(null);
-
-  const [isFirstClick, setIsFirstClick] = useState(false);
   const [isBackgroundGray, setIsBackgroundGray] = useState(false);
 
   const downloadRef = useRef<HTMLDivElement>(null);
@@ -32,15 +29,11 @@ function App() {
         activeElementId={activeElementId}
         setActiveElementId={setActiveElementId}
         editorText={editorText}
-        textColor={textColor}
         changeBgInputRef={changeBgInputRef}
         setEditorImages={setEditorImages}
         addImageInputRef={addImageInputRef}
         setEditorText={setEditorText}
         setEditorBackgroundSrc={setEditorBackgroundSrc}
-        setTextColor={setTextColor}
-        isFirstClick={isFirstClick}
-        setIsFirstClick={setIsFirstClick}
         isBackgroundGray={isBackgroundGray}
         setIsBackgroundGray={setIsBackgroundGray}
       />
@@ -51,12 +44,13 @@ function App() {
         setEditorText={setEditorText}
         setEditorBackgroundSrc={setEditorBackgroundSrc}
         setEditorImages={setEditorImages}
-        setTextColor={setTextColor}
         downloadRef={downloadRef}
         isReset={isReset}
         setIsReset={setIsReset}
         setIsBackgroundGray={setIsBackgroundGray}
         setActiveElementId={setActiveElementId}
+        editorText={editorText}
+        editorImages={editorImages}
       />
     </div>
   );

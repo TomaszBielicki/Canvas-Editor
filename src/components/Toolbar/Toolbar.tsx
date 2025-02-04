@@ -17,9 +17,10 @@ export const Toolbar = ({
   setIsReset,
   setEditorBackgroundSrc,
   setEditorImages,
-  setTextColor,
   setIsBackgroundGray,
   setActiveElementId,
+  editorText,
+  editorImages,
 }: ToolbarProps) => {
   const handleChangeBgClick = () => changeBgInputRef.current?.click();
   const handleAddImage = () => addImageInputRef.current?.click();
@@ -44,13 +45,15 @@ export const Toolbar = ({
   };
 
   const addTextHandler = () => {
-    setIsBackgroundGray(true);
+    setIsBackgroundGray(!editorText.length && !editorImages.length);
+
     const id = crypto.randomUUID();
 
     setEditorText((prev: EditorText[]) => [
       ...prev,
       {
         id,
+        color: "#353535",
         text: "Type your text here",
         width: 200,
         height: 100,
@@ -69,7 +72,6 @@ export const Toolbar = ({
     setEditorBackgroundSrc(createposter);
     setEditorImages([]);
     setEditorText([]);
-    setTextColor("black");
     setIsReset(false);
   };
 

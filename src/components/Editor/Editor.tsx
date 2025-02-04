@@ -2,6 +2,8 @@ import { Rnd } from "react-rnd";
 import { EditorImage, EditorProps, EditorText } from "../../types";
 import { ClickToMoveIcon, BinIcon } from "../Icons";
 
+const COLORS = ["#353535", "#FFFFFF", "#CF0000", "#0055FF", "#00DA16"];
+
 const Editor = ({
   downloadRef,
   editorBackgroundSrc,
@@ -9,15 +11,11 @@ const Editor = ({
   activeElementId,
   setActiveElementId,
   editorText,
-  textColor,
   changeBgInputRef,
   setEditorImages,
   addImageInputRef,
   setEditorText,
   setEditorBackgroundSrc,
-  setTextColor,
-  isFirstClick,
-  setIsFirstClick,
   isBackgroundGray,
   setIsBackgroundGray,
 }: EditorProps) => {
@@ -47,6 +45,8 @@ const Editor = ({
     const file = event.target.files?.[0];
 
     if (file && ["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
+      setActiveElementId(file.name);
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setEditorImages((prev: EditorImage[]) => [
@@ -65,7 +65,6 @@ const Editor = ({
     } else {
       alert("Please upload a valid image file (PNG, JPG, JPEG).");
     }
-    if (file) setActiveElementId(file.name);
   };
 
   const deleteTextHandler = (index: number) => {
@@ -74,12 +73,13 @@ const Editor = ({
     );
   };
 
-  const changeColorHandler = (color: string) => {
-    setTextColor(color);
-  };
-
-  const handleFocus = () => {
-    setIsFirstClick(true);
+  const changeColorHandler = (color: string, index: number) => {
+    setEditorText((prev: EditorText[]) =>
+      prev.map((item: EditorText, idx: number) => {
+        if (index === idx) return { ...item, color };
+        return item;
+      })
+    );
   };
 
   const changeTextHandler = (
@@ -101,14 +101,12 @@ const Editor = ({
       {/* EDITOR */}
       <div
         ref={downloadRef}
-        className={`flex items-center justify-center xl:flex-1 sm:h-[924px] h-[400px] xl:h-[948px] xl:min-w-[759px] bg-center bg-cover overflow-hidden ${
-          isBackgroundGray ? "bg-[#9B9B9B]" : ""
-        }`}
-        style={
-          !isBackgroundGray
-            ? { backgroundImage: `url(${editorBackgroundSrc})` }
-            : {}
-        }
+        className="flex items-center justify-center xl:flex-1 sm:h-[924px] h-[400px] xl:h-[948px] xl:min-w-[759px] overflow-hidden bg-cover bg-center bg-[#9B9B9B]"
+        style={{
+          backgroundImage: isBackgroundGray
+            ? ""
+            : `url(${editorBackgroundSrc})`,
+        }}
       >
         {/* IMAGES */}
         {editorImages?.map(
@@ -166,7 +164,10 @@ const Editor = ({
           }
         )}
         {editorText?.map(
-          ({ id, text, x, y, width, height }: EditorText, index: number) => {
+          (
+            { id, text, x, y, width, height, color }: EditorText,
+            index: number
+          ) => {
             return (
               <Rnd
                 className={`relative px-[24px] py-[12px] bg-contain bg-no-repeat ${
@@ -208,10 +209,9 @@ const Editor = ({
                 <textarea
                   value={text}
                   onChange={(e) => changeTextHandler(e, index)}
-                  onFocus={handleFocus}
                   className="sm:w-full sm:h-full w-[100px] h-[100px] resize-none font-[700] break-words focus:placeholder-opacity-100 placeholder-opacity-25 text-[32px] text-center focus:outline-none focus:ring-0 focus:border-none overflow-hidden leading-[1.2]"
                   style={{
-                    color: isFirstClick ? textColor : "#353535",
+                    color,
                   }}
                   onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement;
@@ -238,19 +238,18 @@ const Editor = ({
                 )}
                 {activeElementId === id && (
                   <div className="absolute bottom-[-30px] left-0 flex gap-[4px]">
-                    {[
-                      "#353535",
-                      "#FFFFFF",
-                      "#CF0000",
-                      "#0055FF",
-                      "#00DA16",
-                    ].map((color) => (
+                    {COLORS.map((colorItem) => (
                       <button
-                        key={color}
-                        className={`h-[16px] w-[16px] m-[4px] rounded-[50%] bg-[${color}] ${
-                          textColor === color ? "outline-2 outline-white" : ""
-                        }`}
-                        onClick={() => changeColorHandler(color)}
+                        key={colorItem}
+                        className={`h-[16px] w-[16px] m-[4px] rounded-[50%]`}
+                        onClick={() => changeColorHandler(colorItem, index)}
+                        style={{
+                          backgroundColor: colorItem,
+                          //border: "10px solid transparent",
+                          outline:
+                            colorItem === color ? "2px solid white" : " ",
+                          outlineOffset: "2px",
+                        }}
                       ></button>
                     ))}
                   </div>

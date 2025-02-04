@@ -11,6 +11,7 @@ export interface EditorImage {
 
 export interface EditorText {
   id: string;
+  color: string;
   text: string;
   width: number | string;
   height: number | string;
@@ -25,17 +26,13 @@ export interface EditorProps {
   activeElementId: string | null;
   setActiveElementId: React.Dispatch<React.SetStateAction<string | null>>;
   editorText: EditorText[];
-  textColor: string;
   changeBgInputRef: MutableRefObject<HTMLInputElement | null>;
   setEditorImages: React.Dispatch<React.SetStateAction<EditorImage[]>>;
   addImageInputRef: MutableRefObject<HTMLInputElement | null>;
   setEditorText: React.Dispatch<React.SetStateAction<EditorText[]>>;
   setEditorBackgroundSrc: React.Dispatch<React.SetStateAction<string>>;
-  setTextColor: React.Dispatch<React.SetStateAction<string>>;
   setIsBackgroundGray: React.Dispatch<React.SetStateAction<boolean>>;
   isBackgroundGray: boolean;
-  isFirstClick: boolean;
-  setIsFirstClick: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type ToolbarProps = {
@@ -47,9 +44,10 @@ export type ToolbarProps = {
   setIsReset: React.Dispatch<React.SetStateAction<boolean>>;
   setEditorBackgroundSrc: React.Dispatch<React.SetStateAction<string>>;
   setEditorImages: React.Dispatch<React.SetStateAction<EditorImage[]>>;
-  setTextColor: React.Dispatch<React.SetStateAction<string>>;
   setIsBackgroundGray: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveElementId: React.Dispatch<React.SetStateAction<string | null>>;
+  editorText: EditorText[];
+  editorImages: EditorImage[];
 };
 
 export type ButtonItem = {
@@ -69,5 +67,5 @@ export type ButtonListProps = {
 export type ButtonProps = {
   icon: ReactNode;
   text: string;
-  onClick: any;
+  onClick: () => void;
 };
