@@ -245,7 +245,6 @@ const Editor = ({
                         onClick={() => changeColorHandler(colorItem, index)}
                         style={{
                           backgroundColor: colorItem,
-                          //border: "10px solid transparent",
                           outline:
                             colorItem === color ? "2px solid white" : " ",
                           outlineOffset: "2px",
