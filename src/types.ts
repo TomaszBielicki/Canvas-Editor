@@ -32,6 +32,10 @@ export interface EditorProps {
   setEditorText: React.Dispatch<React.SetStateAction<EditorText[]>>;
   setEditorBackgroundSrc: React.Dispatch<React.SetStateAction<string>>;
   setTextColor: React.Dispatch<React.SetStateAction<string>>;
+  setIsBackgroundGray: React.Dispatch<React.SetStateAction<boolean>>;
+  isBackgroundGray: boolean;
+  isFirstClick: boolean;
+  setIsFirstClick: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type ToolbarProps = {
@@ -44,6 +48,8 @@ export type ToolbarProps = {
   setEditorBackgroundSrc: React.Dispatch<React.SetStateAction<string>>;
   setEditorImages: React.Dispatch<React.SetStateAction<EditorImage[]>>;
   setTextColor: React.Dispatch<React.SetStateAction<string>>;
+  setIsBackgroundGray: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveElementId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export type ButtonItem = {
@@ -56,6 +62,8 @@ export type ButtonListProps = {
   setEditorText: React.Dispatch<React.SetStateAction<EditorText[]>>;
   handleAddImage: () => void;
   handleChangeBgClick: () => void;
+  setIsBackgroundGray: React.Dispatch<React.SetStateAction<boolean>>;
+  addTextHandler: () => void;
 };
 
 export type ButtonProps = {
