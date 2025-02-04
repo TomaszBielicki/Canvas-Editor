@@ -1,9 +1,8 @@
 import { Rnd } from "react-rnd";
-import { ClickToMoveIcon } from "../Icons";
 import { EditorImage, EditorProps, EditorText } from "../../types";
-import BinIcon from "../Icons/BinIcon";
+import { ClickToMoveIcon, BinIcon } from "../Icons";
 
-const Editor: React.FC<EditorProps> = ({
+const Editor = ({
   downloadRef,
   editorBackgroundSrc,
   editorImages,
@@ -17,9 +16,74 @@ const Editor: React.FC<EditorProps> = ({
   setEditorText,
   setEditorBackgroundSrc,
   setTextColor,
-}) => {
+  isFirstClick,
+  setIsFirstClick,
+  isBackgroundGray,
+  setIsBackgroundGray,
+}: EditorProps) => {
+  const changeBackgroundHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file && ["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditorBackgroundSrc(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      setIsBackgroundGray(false);
+    } else {
+      alert("Please upload a valid image file (PNG, JPG, JPEG).");
+    }
+  };
+
+  const deleteImageHandler = (index: number) => {
+    setEditorImages((prev: EditorImage[]) =>
+      prev.filter((_, idx) => index !== idx)
+    );
+  };
+
+  const addImageHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file && ["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditorImages((prev: EditorImage[]) => [
+          ...prev,
+          {
+            id: file.name,
+            src: reader.result as string,
+            x: (759 - 200) / 2,
+            y: (948 - 200) / 2,
+            width: 200,
+            height: 200,
+          },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert("Please upload a valid image file (PNG, JPG, JPEG).");
+    }
+    if (file) setActiveElementId(file.name);
+  };
+
+  const deleteTextHandler = (index: number) => {
+    setEditorText((prev: EditorText[]) =>
+      prev.filter((_, idx) => index !== idx)
+    );
+  };
+
+  const changeColorHandler = (color: string) => {
+    setTextColor(color);
+  };
+
+  const handleFocus = () => {
+    setIsFirstClick(true);
+  };
+
   const changeTextHandler = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLTextAreaElement>,
     index: number
   ) => {
     const updatedText = e.target.value;
@@ -32,72 +96,28 @@ const Editor: React.FC<EditorProps> = ({
     );
   };
 
-  const changeBackgroundHandler = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file && ["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setEditorBackgroundSrc(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("Please upload a valid image file (PNG, JPG, JPEG).");
-    }
-  };
-
-  const deleteImageHandler = (index: number) => {
-    setEditorImages((prev: EditorImage[]) =>
-      prev.filter((_, idx) => index !== idx)
-    );
-  };
-  const deleteTextHandler = (index: number) => {
-    setEditorText((prev: EditorText[]) =>
-      prev.filter((_, idx) => index !== idx)
-    );
-  };
-
-  const changeColorHandler = (color: string) => {
-    setTextColor(color);
-  };
-
-  const addImageHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && ["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setEditorImages((prev: EditorImage[]) => [
-          ...prev,
-          {
-            id: file.name,
-            src: reader.result as string,
-            width: 200,
-            height: 100,
-            x: 0,
-            y: 0,
-          },
-        ]);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("Please upload a valid image file (PNG, JPG, JPEG).");
-    }
-  };
-
   return (
     <>
       {/* EDITOR */}
       <div
         ref={downloadRef}
-        className="flex-1 h-[948px] min-w-[759px] sm:min-w-[500px] md:min-w-[600px] bg-cover bg-center overflow-hidden"
-        style={{ backgroundImage: `url(${editorBackgroundSrc})` }}
+        className={`flex items-center justify-center xl:flex-1 sm:h-[924px] h-[400px] xl:h-[948px] xl:min-w-[759px] bg-center bg-cover overflow-hidden ${
+          isBackgroundGray ? "bg-[#9B9B9B]" : ""
+        }`}
+        style={
+          !isBackgroundGray
+            ? { backgroundImage: `url(${editorBackgroundSrc})` }
+            : {}
+        }
       >
         {/* IMAGES */}
         {editorImages?.map(
           ({ id, src, x, y, width, height }: EditorImage, index: number) => {
             return (
               <Rnd
+                className={`bg-center bg-cover bg-no-repeat ${
+                  activeElementId === id ? "border-2 border-[#7209B7]" : ""
+                }`}
                 bounds="parent"
                 key={id}
                 enableResizing={{
@@ -110,12 +130,14 @@ const Editor: React.FC<EditorProps> = ({
                   bottomLeft: false,
                   topLeft: false,
                 }}
-                default={{ x, y, width: 200, height: 200 }}
+                default={{
+                  x: x,
+                  y: y,
+                  width: width,
+                  height: height,
+                }}
                 style={{
                   backgroundImage: `url(${src})`,
-                  backgroundSize: "cover",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
                 }}
                 dragHandleClassName="drag-handle"
                 onMouseDown={(e) => {
@@ -143,13 +165,13 @@ const Editor: React.FC<EditorProps> = ({
             );
           }
         )}
-
-        {/* TEXTS */}
         {editorText?.map(
           ({ id, text, x, y, width, height }: EditorText, index: number) => {
             return (
               <Rnd
-                className=" relative  px-[24px] py-[12px] focus-within:border-2 focus-within:border-[#7209B7]"
+                className={`relative px-[24px] py-[12px] bg-contain bg-no-repeat ${
+                  activeElementId === id ? "border-2 border-[#7209B7]" : ""
+                }`}
                 bounds="parent"
                 key={id}
                 enableResizing={{
@@ -162,23 +184,40 @@ const Editor: React.FC<EditorProps> = ({
                   bottomLeft: false,
                   topLeft: false,
                 }}
-                default={{ x, y, width: 350, height: 120 }}
-                style={{
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
+                default={{
+                  x: (759 - 350) / 2,
+                  y: (948 - 120) / 2,
+                  width: "18%",
+                  height: "11%",
                 }}
                 dragHandleClassName="drag-handle"
                 onMouseDown={(e) => {
                   e.stopPropagation();
                   setActiveElementId(id);
                 }}
+                onResize={(e, direction, ref) => {
+                  const width = ref.offsetWidth;
+                  const height = ref.offsetHeight;
+                  const fontSize = Math.min(width / 12, height / 3);
+                  ref.querySelector("textarea")!.style.fontSize = `${Math.min(
+                    Math.max(fontSize, 8),
+                    48
+                  )}px`;
+                }}
               >
-                <input
-                  type="text"
-                  value="Type your text here"
+                <textarea
+                  value={text}
                   onChange={(e) => changeTextHandler(e, index)}
-                  className=" w-[302px] h-[98px]  font-[700] break-words focus:placeholder-opacity-100 placeholder-opacity-25 text-[32px] text-center focus:outline-none focus:ring-0 focus:border-none"
-                  style={{ color: textColor }}
+                  onFocus={handleFocus}
+                  className="sm:w-full sm:h-full w-[100px] h-[100px] resize-none font-[700] break-words focus:placeholder-opacity-100 placeholder-opacity-25 text-[32px] text-center focus:outline-none focus:ring-0 focus:border-none overflow-hidden leading-[1.2]"
+                  style={{
+                    color: isFirstClick ? textColor : "#353535",
+                  }}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = "auto";
+                    target.style.height = `${target.scrollHeight}px`;
+                  }}
                 />
 
                 {activeElementId === id && (
@@ -216,35 +255,11 @@ const Editor: React.FC<EditorProps> = ({
                     ))}
                   </div>
                 )}
-                {/* {activeElementId === id && (
-                  <div className="flex gap-[4px]">
-                    <button
-                      className="h-[16px] w-[16px]  m-[4px] rounded-[50%] bg-[#353535]"
-                      onClick={() => changeColorHandler("#353535")}
-                    ></button>
-                    <button
-                      className="h-[16px] w-[16px]  m-[4px]  rounded-[50%] bg-[#FFFFFF]"
-                      onClick={() => changeColorHandler("#FFFFFF")}
-                    ></button>
-
-                    <button
-                      className="h-[16px] w-[16px]   m-[4px] rounded-[50%] bg-[#CF0000]"
-                      onClick={() => changeColorHandler("#CF0000")}
-                    ></button>
-                    <button
-                      className="h-[16px] w-[16px]  m-[4px] rounded-[50%] bg-[#0055FF]"
-                      onClick={() => changeColorHandler("#0055FF")}
-                    ></button>
-                    <button
-                      className="h-[16px] w-[16px]  m-[4px] rounded-[50%] bg-[#00DA16]"
-                      onClick={() => changeColorHandler("#00DA16")}
-                    ></button>
-                  </div>
-                )} */}
               </Rnd>
             );
           }
         )}
+
         {/* HIDDEN CHANGE BG */}
         <input
           type="file"
