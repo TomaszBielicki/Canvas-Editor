@@ -3,7 +3,7 @@ import { LogoIcon, MoveBackIcon } from "../Icons";
 
 import ResetWarning from "../ResetWarrning/ResetWarning";
 import createposter from "../../assets/create-poster.png";
-import { ToolbarProps } from "../../types";
+import { EditorText, ToolbarProps } from "../../types";
 
 import { toPng } from "html-to-image";
 import { saveAs } from "file-saver";
@@ -18,6 +18,8 @@ export const Toolbar = ({
   setEditorBackgroundSrc,
   setEditorImages,
   setTextColor,
+  setIsBackgroundGray,
+  setActiveElementId,
 }: ToolbarProps) => {
   const handleChangeBgClick = () => changeBgInputRef.current?.click();
   const handleAddImage = () => addImageInputRef.current?.click();
@@ -41,6 +43,24 @@ export const Toolbar = ({
     }
   };
 
+  const addTextHandler = () => {
+    setIsBackgroundGray(true);
+    const id = crypto.randomUUID();
+
+    setEditorText((prev: EditorText[]) => [
+      ...prev,
+      {
+        id,
+        text: "Type your text here",
+        width: 200,
+        height: 100,
+        x: 0,
+        y: 0,
+      },
+    ]);
+    setActiveElementId(id);
+  };
+
   const resetClickHandler = () => {
     setIsReset(true);
   };
@@ -57,7 +77,7 @@ export const Toolbar = ({
     setIsReset(false);
   };
   return (
-    <div className="flex flex-col flex-1  gap-10">
+    <div className="flex flex-col flex-1  xl:gap-3 2xl:gap-10">
       <div className="flex justify-between items-center py-[8px]">
         <div className="flex gap-[12px] items-center">
           <LogoIcon />
@@ -85,6 +105,8 @@ export const Toolbar = ({
         setEditorText={setEditorText}
         handleAddImage={handleAddImage}
         handleChangeBgClick={handleChangeBgClick}
+        setIsBackgroundGray={setIsBackgroundGray}
+        addTextHandler={addTextHandler}
       />
 
       <div className="border-b-2 border-[#FAFAFA]"></div>
