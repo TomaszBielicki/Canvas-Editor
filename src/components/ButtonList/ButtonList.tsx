@@ -1,26 +1,12 @@
 import { Button } from "../Button/Button";
 import { BackgroundIcon, ImageIcon, TextIcon } from "../Icons";
-import { EditorText, ButtonItem, ButtonListProps } from "../../types";
+import { ButtonItem, ButtonListProps } from "../../types";
 
 const ButtonList = ({
-  setEditorText,
   handleAddImage,
   handleChangeBgClick,
+  addTextHandler,
 }: ButtonListProps) => {
-  const addTextHandler = () => {
-    setEditorText((prev: EditorText[]) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        text: "Text",
-        width: 200,
-        height: 100,
-        x: 0,
-        y: 0,
-      },
-    ]);
-  };
-
   const buttonData: ButtonItem[] = [
     { icon: <TextIcon />, text: "Text", onClick: addTextHandler },
     { icon: <ImageIcon />, text: "Image", onClick: handleAddImage },
