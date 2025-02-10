@@ -70,6 +70,7 @@ export const Toolbar = ({
 
   const confirmReset = () => {
     setEditorBackgroundSrc(createposter);
+    setIsBackgroundGray(false);
     setEditorImages([]);
     setEditorText([]);
     setIsReset(false);
