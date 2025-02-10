@@ -1,24 +1,22 @@
 import { Rnd } from "react-rnd";
-import { EditorImage, EditorProps, EditorText } from "../../types";
+import { EditorImage, EditorText } from "../../types";
 import { ClickToMoveIcon, BinIcon } from "../Icons";
+import { useCanvas } from "../../store/CanvasContext.tsx";
 
 const COLORS = ["#353535", "#FFFFFF", "#CF0000", "#0055FF", "#00DA16"];
 
-const Editor = ({
-  downloadRef,
-  editorBackgroundSrc,
-  editorImages,
-  activeElementId,
-  setActiveElementId,
-  editorText,
-  changeBgInputRef,
-  setEditorImages,
-  addImageInputRef,
-  setEditorText,
-  setEditorBackgroundSrc,
-  isBackgroundGray,
-  setIsBackgroundGray,
-}: EditorProps) => {
+const Editor = () => {
+  const { background, objects, settings, refs } = useCanvas();
+  const {
+    editorBackgroundSrc,
+    setEditorBackgroundSrc,
+    isBackgroundGray,
+    setIsBackgroundGray,
+  } = background;
+  const { editorImages, setEditorImages, editorText, setEditorText } = objects;
+  const { activeElementId, setActiveElementId } = settings;
+  const { downloadRef, changeBgInputRef, addImageInputRef } = refs;
+
   const changeBackgroundHandler = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
