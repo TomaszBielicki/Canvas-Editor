@@ -21,33 +21,14 @@ export interface EditorText {
 
 export interface EditorProps {
   downloadRef: MutableRefObject<HTMLDivElement | null>;
-  editorBackgroundSrc: string;
-  editorImages: EditorImage[];
-  activeElementId: string | null;
-  setActiveElementId: React.Dispatch<React.SetStateAction<string | null>>;
-  editorText: EditorText[];
   changeBgInputRef: MutableRefObject<HTMLInputElement | null>;
-  setEditorImages: React.Dispatch<React.SetStateAction<EditorImage[]>>;
   addImageInputRef: MutableRefObject<HTMLInputElement | null>;
-  setEditorText: React.Dispatch<React.SetStateAction<EditorText[]>>;
-  setEditorBackgroundSrc: React.Dispatch<React.SetStateAction<string>>;
-  setIsBackgroundGray: React.Dispatch<React.SetStateAction<boolean>>;
-  isBackgroundGray: boolean;
 }
 
 export type ToolbarProps = {
   addImageInputRef: MutableRefObject<HTMLInputElement | null>;
   changeBgInputRef: MutableRefObject<HTMLInputElement | null>;
-  setEditorText: React.Dispatch<React.SetStateAction<EditorText[]>>;
   downloadRef: MutableRefObject<HTMLDivElement | null>;
-  isReset: boolean;
-  setIsReset: React.Dispatch<React.SetStateAction<boolean>>;
-  setEditorBackgroundSrc: React.Dispatch<React.SetStateAction<string>>;
-  setEditorImages: React.Dispatch<React.SetStateAction<EditorImage[]>>;
-  setIsBackgroundGray: React.Dispatch<React.SetStateAction<boolean>>;
-  setActiveElementId: React.Dispatch<React.SetStateAction<string | null>>;
-  editorText: EditorText[];
-  editorImages: EditorImage[];
 };
 
 export type ButtonItem = {
@@ -69,3 +50,29 @@ export type ButtonProps = {
   text: string;
   onClick: () => void;
 };
+
+export interface CanvasContextType {
+  background: {
+    editorBackgroundSrc: string;
+    setEditorBackgroundSrc: React.Dispatch<React.SetStateAction<string>>;
+    isBackgroundGray: boolean;
+    setIsBackgroundGray: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  objects: {
+    editorImages: EditorImage[];
+    setEditorImages: React.Dispatch<React.SetStateAction<EditorImage[]>>;
+    editorText: EditorText[];
+    setEditorText: React.Dispatch<React.SetStateAction<EditorText[]>>;
+  };
+  settings: {
+    isReset: boolean;
+    setIsReset: React.Dispatch<React.SetStateAction<boolean>>;
+    activeElementId: string | null;
+    setActiveElementId: React.Dispatch<React.SetStateAction<string | null>>;
+  };
+  refs: {
+    downloadRef: MutableRefObject<HTMLDivElement | null>;
+    changeBgInputRef: MutableRefObject<HTMLInputElement | null>;
+    addImageInputRef: MutableRefObject<HTMLInputElement | null>;
+  };
+}

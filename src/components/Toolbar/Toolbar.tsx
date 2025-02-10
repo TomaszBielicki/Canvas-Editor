@@ -2,26 +2,20 @@ import ButtonList from "../ButtonList/ButtonList";
 import { LogoIcon, MoveBackIcon } from "../Icons";
 
 import ResetWarning from "../ResetWarrning/ResetWarning";
-import createposter from "../../assets/create-poster.png";
-import { EditorText, ToolbarProps } from "../../types";
+import { EditorText } from "../../types";
+import { useCanvas } from "../../store/CanvasContext.tsx";
 
 import { toPng } from "html-to-image";
 import { saveAs } from "file-saver";
 
-export const Toolbar = ({
-  addImageInputRef,
-  changeBgInputRef,
-  setEditorText,
-  downloadRef,
-  isReset,
-  setIsReset,
-  setEditorBackgroundSrc,
-  setEditorImages,
-  setIsBackgroundGray,
-  setActiveElementId,
-  editorText,
-  editorImages,
-}: ToolbarProps) => {
+export const Toolbar = () => {
+  const { background, objects, settings, refs } = useCanvas();
+
+  const { setIsBackgroundGray } = background;
+  const { editorImages, editorText, setEditorText } = objects;
+  const { isReset, setIsReset, setActiveElementId } = settings;
+  const { addImageInputRef, changeBgInputRef, downloadRef } = refs;
+
   const handleChangeBgClick = () => changeBgInputRef.current?.click();
   const handleAddImage = () => addImageInputRef.current?.click();
 
@@ -68,17 +62,6 @@ export const Toolbar = ({
     setIsReset(true);
   };
 
-  const confirmReset = () => {
-    setEditorBackgroundSrc(createposter);
-    setIsBackgroundGray(false);
-    setEditorImages([]);
-    setEditorText([]);
-    setIsReset(false);
-  };
-
-  const cancelReset = () => {
-    setIsReset(false);
-  };
   return (
     <div className="flex flex-col flex-1  xl:gap-3 2xl:gap-10">
       <div className="flex justify-between items-center py-[8px]">
@@ -122,9 +105,7 @@ export const Toolbar = ({
         </button>
       </div>
 
-      {isReset && (
-        <ResetWarning confirmReset={confirmReset} cancelReset={cancelReset} />
-      )}
+      {isReset && <ResetWarning />}
     </div>
   );
 };
