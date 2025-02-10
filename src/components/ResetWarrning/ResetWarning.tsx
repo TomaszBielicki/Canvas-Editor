@@ -1,9 +1,28 @@
 import ReactDOM from "react-dom";
 import { WarningIcon } from "../Icons";
 import CrossIcon from "../Icons/CrossIcon";
+import { useCanvas } from "../../store/CanvasContext";
+import createposter from "../../assets/create-poster.png";
 
-function ResetWarning({ confirmReset, cancelReset }: any) {
+function ResetWarning() {
   const portal = document.getElementById("portal-root");
+
+  const { background, objects, settings } = useCanvas();
+  const { setEditorBackgroundSrc, setIsBackgroundGray } = background;
+  const { setEditorImages, setEditorText } = objects;
+  const { setIsReset } = settings;
+
+  const confirmReset = () => {
+    setEditorBackgroundSrc(createposter);
+    setIsBackgroundGray(false);
+    setEditorImages([]);
+    setEditorText([]);
+    setIsReset(false);
+  };
+
+  const cancelReset = () => {
+    setIsReset(false);
+  };
 
   if (!portal) {
     return null;
